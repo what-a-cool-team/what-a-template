@@ -3,12 +3,12 @@ use axum::routing::get;
 use crate::errors::ApiResult;
 use crate::models::responses::HelloResponse;
 
-pub struct HelloRouter;
+pub struct HelloController;
 
-impl HelloRouter {
-    pub fn new() -> Router {
+impl HelloController {
+    pub fn new_router() -> Router {
         Router::new()
-            .route("/hello", get(HelloRouter::hello))
+            .route("/hello", get(HelloController::hello))
     }
 
     pub async fn hello() -> ApiResult<Json<HelloResponse>> {

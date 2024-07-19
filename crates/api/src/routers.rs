@@ -7,15 +7,16 @@ use tokio::net::TcpListener;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
-use crate::endpoints::hello::HelloRouter;
+use crate::controllers::hello::HelloController;
 
 static HTTP_TIMEOUT: u64 = 30;
 
-pub struct App;
-impl App {
+pub struct Api;
+
+impl Api {
     pub async fn serve(port: u32, cors_origin: &str) -> anyhow::Result<()> {
         let router = Router::new()
-            .nest("/api/v1", HelloRouter::new())
+            .nest("/api/v1", HelloController::new_router())
             .layer(ServiceBuilder::new()
                 .layer(TraceLayer::new_for_http())
                 .layer(HandleErrorLayer::new(Self::handle_timeout))
