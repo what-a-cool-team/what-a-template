@@ -1,6 +1,6 @@
 use axum::{Json, Router};
 use axum::routing::get;
-use crate::errors::ApiResult;
+use domain::errors::ApiResult;
 use crate::models::responses::HelloResponse;
 
 pub struct HelloController;
