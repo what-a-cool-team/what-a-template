@@ -23,7 +23,7 @@ impl ErrorResponse {
 #[derive(Error, Debug)]
 pub enum ApiError {
     #[error("Invalid request")]
-    BadRequest(String),
+    BadRequest,
 
     #[error("Unauthorized access to the resource")]
     Unauthorized,
@@ -31,14 +31,24 @@ pub enum ApiError {
     #[error("Unprivileged access")]
     Forbidden,
 
+    #[error("{0}")]
+    NotFound(String),
+
+    #[error("{0}")]
+    Conflict(String),
+
     #[error("Unexpected error has occurred")]
-    InternalServerError,
+    InternalServerError(String)
 }
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> Response {
         let (status, error_message) = match self {
-            Self::BadRequest(err) => (StatusCode::BAD_REQUEST, err),
+            Self::BadRequest => (StatusCode::BAD_REQUEST, Self::BadRequest.to_string()),
+            Self::Unauthorized => (StatusCode::UNAUTHORIZED, Self::Unauthorized.to_string()),
+            Self::Forbidden => (StatusCode::FORBIDDEN, Self::Forbidden.to_string()),
+            Self::NotFound(err) => (StatusCode::NOT_FOUND, err),
+            Self::Conflict(err) => (StatusCode::CONFLICT, err),
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("Unexpected error has occurred"),
