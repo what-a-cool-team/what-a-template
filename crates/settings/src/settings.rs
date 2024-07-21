@@ -14,7 +14,7 @@ pub struct Settings {
 }
 
 impl Settings {
-    pub fn new(path: &str) -> Result<Self, ConfigError> {
+    pub fn from(path: &str) -> Result<Self, ConfigError> {
         let s = Config::builder()
             .add_source(File::with_name(path))
             .add_source(

@@ -17,7 +17,7 @@ async fn main() -> anyhow::Result<()> {
         .get_matches();
     let config_path = matches.get_one::<String>("config").unwrap();
 
-    let settings = Settings::new(config_path).unwrap();
+    let settings = Settings::from(config_path).unwrap();
 
     let service_registry = ServiceRegistry::new();
 
