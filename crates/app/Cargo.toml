@@ -12,3 +12,6 @@ domain = { version = "0.1.0", path = "../domain" }
 tokio = { version = "1.38.1", features = ["full"] }
 tracing-subscriber = { version = "0.3.18", features = ["json"] }
 tracing = "0.1.40"
+clap = { version = "4.5.9", features = ["cargo"] }
+serde = { version = "1.0.204", features = ["derive"] }
+settings = { version = "0.1.0", path = "../settings" }
