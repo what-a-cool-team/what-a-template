@@ -7,6 +7,7 @@ use tokio::net::TcpListener;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
+use domain::services::service_registry::ServiceRegistry;
 use crate::controllers::greetings::GreetingsController;
 
 static HTTP_TIMEOUT: u64 = 30;
@@ -14,9 +15,9 @@ static HTTP_TIMEOUT: u64 = 30;
 pub struct Api;
 
 impl Api {
-    pub async fn serve(port: u32, cors_origin: &str) -> anyhow::Result<()> {
+    pub async fn serve(port: u32, cors_origin: &str, service_registry: ServiceRegistry) -> anyhow::Result<()> {
         let router = Router::new()
-            .nest("/api/v1/greetings", GreetingsController::new_router())
+            .nest("/api/v1/greetings", GreetingsController::new_router(service_registry.clone()))
             .layer(ServiceBuilder::new()
                 .layer(TraceLayer::new_for_http())
                 .layer(HandleErrorLayer::new(Self::handle_timeout))

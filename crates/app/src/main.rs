@@ -1,6 +1,7 @@
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 use api::routers::Api;
+use domain::services::service_registry::ServiceRegistry;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -8,7 +9,9 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer().json())
         .init();
 
-    Api::serve(8080, "http://localhost:3000")
+    let service_registry = ServiceRegistry::new();
+
+    Api::serve(8080, "http://localhost:3000", service_registry.clone())
         .await
         .unwrap();
 

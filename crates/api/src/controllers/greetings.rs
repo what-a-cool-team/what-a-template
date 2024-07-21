@@ -1,41 +1,31 @@
-use axum::{Json, Router};
+use axum::{Extension, Json, Router};
 use axum::routing::{get, post};
 use axum_valid::Valid;
 use domain::errors::ApiResult;
-use domain::models::greeting::Greeting;
+use domain::services::greeting_service::DynGreetingService;
+use domain::services::service_registry::ServiceRegistry;
 use crate::models::requests::CreateGreetingRequest;
 use crate::models::responses::{CreateGreetingResponse, GetGreetingsResponse};
 
 pub struct GreetingsController;
 
 impl GreetingsController {
-    pub fn new_router() -> Router {
+    pub fn new_router(service_registry: ServiceRegistry) -> Router {
         Router::new()
-            .route("/", get(GreetingsController::get_greetings))
+            .route("/", get(Self::get_greetings))
             .route("/", post(Self::create_greeting))
+            .layer(Extension(service_registry.greeting_service))
     }
 
-    pub async fn get_greetings() -> ApiResult<Json<GetGreetingsResponse>> {
+    pub async fn get_greetings(Extension(greeting_service): Extension<DynGreetingService>) -> ApiResult<Json<GetGreetingsResponse>> {
         Ok(Json(GetGreetingsResponse {
-            greetings: vec![
-                Greeting {
-                    id: 0,
-                    created_at: "2024-06-19T00:00:00.000Z".to_string(),
-                    updated_at: "2024-06-19T00:00:00.000Z".to_string(),
-                    greeting: "Aloha!".to_string(),
-                }
-            ]
+            greetings: greeting_service.get_greetings().await?
         }))
     }
 
-    pub async fn create_greeting(Valid(Json(request)): Valid<Json<CreateGreetingRequest>>) -> ApiResult<Json<CreateGreetingResponse>>{
+    pub async fn create_greeting(Extension(greeting_service): Extension<DynGreetingService>, Valid(Json(request)): Valid<Json<CreateGreetingRequest>>) -> ApiResult<Json<CreateGreetingResponse>>{
         Ok(Json(CreateGreetingResponse {
-            greeting: Greeting {
-                id: 0,
-                created_at: "2024-06-19T00:00:01.000Z".to_string(),
-                updated_at: "2024-06-19T00:00:01.000Z".to_string(),
-                greeting: request.greeting,
-            },
+            greeting: greeting_service.create_greeting(request.greeting).await?,
         }))
     }
 }
