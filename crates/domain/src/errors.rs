@@ -1,9 +1,9 @@
-use std::collections::HashMap;
 use axum::http::StatusCode;
-use axum::Json;
 use axum::response::{IntoResponse, Response};
-use thiserror::Error;
+use axum::Json;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use thiserror::Error;
 
 pub type ApiResult<T> = Result<T, ApiError>;
 
@@ -38,7 +38,7 @@ pub enum ApiError {
     Conflict(String),
 
     #[error("Unexpected error has occurred")]
-    InternalServerError(String)
+    InternalServerError(String),
 }
 
 impl IntoResponse for ApiError {
@@ -52,7 +52,7 @@ impl IntoResponse for ApiError {
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 String::from("Unexpected error has occurred"),
-            )
+            ),
         };
 
         let body = Json(ErrorResponse::new(error_message));

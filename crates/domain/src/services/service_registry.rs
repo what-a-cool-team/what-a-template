@@ -1,5 +1,5 @@
+use crate::services::greeting_service::{DomainGreetingService, DynGreetingService};
 use std::sync::Arc;
-use crate::services::greeting_service::{DynGreetingService, DomainGreetingService};
 
 #[derive(Clone)]
 pub struct ServiceRegistry {
@@ -9,8 +9,6 @@ pub struct ServiceRegistry {
 impl ServiceRegistry {
     pub fn new() -> Self {
         let greeting_service = Arc::new(DomainGreetingService::new()) as DynGreetingService;
-        ServiceRegistry {
-            greeting_service,
-        }
+        ServiceRegistry { greeting_service }
     }
 }

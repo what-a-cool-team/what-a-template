@@ -10,5 +10,5 @@ pub struct Greeting {
     #[serde(rename = "updatedAt")]
     pub updated_at: String,
 
-    pub greeting: String
+    pub greeting: String,
 }
