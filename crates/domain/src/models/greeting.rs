@@ -1,14 +1,16 @@
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
+use sqlx::types::chrono::{DateTime, Utc};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(FromRow, Debug, Deserialize, Serialize)]
 pub struct Greeting {
     pub id: i64,
 
     #[serde(rename = "createdAt")]
-    pub created_at: String,
+    pub created_at: DateTime<Utc>,
 
     #[serde(rename = "updatedAt")]
-    pub updated_at: String,
+    pub updated_at: DateTime<Utc>,
 
     pub greeting: String,
 }
