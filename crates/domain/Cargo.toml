@@ -9,3 +9,5 @@ edition = "2021"
 axum = "0.7.5"
 thiserror = "1.0.63"
 serde = { version = "1.0.204", features = ["derive"] }
+sqlx = { version = "0.7.4", features = ["postgres", "runtime-tokio-rustls", "chrono"] }
+anyhow = "1.0.86"

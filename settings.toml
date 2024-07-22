@@ -1,2 +1,7 @@
 [server]
 port = 8080
+
+[database]
+connection_url = "postgresql://localhost:5432/template_app"
+max_connections = 1
+migrate_on_startup = true

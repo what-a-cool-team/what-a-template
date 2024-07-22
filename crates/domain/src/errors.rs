@@ -1,8 +1,9 @@
-use axum::http::StatusCode;
-use axum::response::{IntoResponse, Response};
-use axum::Json;
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+
+use axum::http::StatusCode;
+use axum::Json;
+use axum::response::{IntoResponse, Response};
+use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
 pub type ApiResult<T> = Result<T, ApiError>;
@@ -39,6 +40,9 @@ pub enum ApiError {
 
     #[error("Unexpected error has occurred")]
     InternalServerError(String),
+
+    #[error(transparent)]
+    AnyhowError(#[from] anyhow::Error),
 }
 
 impl IntoResponse for ApiError {

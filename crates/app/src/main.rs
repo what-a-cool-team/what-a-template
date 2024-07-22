@@ -1,4 +1,6 @@
+use anyhow::Context;
 use clap::{arg, command};
+use sqlx::postgres::PgPoolOptions;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
 
@@ -19,7 +21,20 @@ async fn main() -> anyhow::Result<()> {
 
     let settings = Settings::from(config_path).unwrap();
 
-    let service_registry = ServiceRegistry::new();
+    let pool = PgPoolOptions::new()
+        .max_connections(settings.database.max_connections)
+        .connect(&settings.database.connection_url)
+        .await
+        .context("Error while connecting database")?;
+
+    if settings.database.migrate_on_startup {
+        sqlx::migrate!()
+            .run(&pool)
+            .await
+            .context("Error while running database migrations")?
+    }
+
+    let service_registry = ServiceRegistry::new(pool);
 
     Api::serve(settings.server.port, service_registry.clone())
         .await

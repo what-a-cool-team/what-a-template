@@ -1,7 +1,10 @@
+use std::sync::Arc;
+
+use axum::async_trait;
+
 use crate::errors::ApiResult;
 use crate::models::greeting::Greeting;
-use axum::async_trait;
-use std::sync::Arc;
+use crate::repositories::greeting_repository::DynGreetingRepository;
 
 pub type DynGreetingService = Arc<dyn GreetingService + Send + Sync>;
 
@@ -12,31 +15,33 @@ pub trait GreetingService {
 }
 
 #[derive(Clone)]
-pub struct DomainGreetingService;
+pub struct DomainGreetingService {
+    pub greeting_repository: DynGreetingRepository,
+}
 
 impl DomainGreetingService {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(greeting_repository: DynGreetingRepository) -> Self {
+        Self {
+            greeting_repository,
+        }
     }
 }
 
 #[async_trait]
 impl GreetingService for DomainGreetingService {
     async fn get_greetings(&self) -> ApiResult<Vec<Greeting>> {
-        Ok(vec![Greeting {
-            id: 0,
-            created_at: "2024-06-19T00:00:00.000Z".to_string(),
-            updated_at: "2024-06-19T00:00:00.000Z".to_string(),
-            greeting: "Aloha!".to_string(),
-        }])
+        Ok(self.greeting_repository.get_greetings().await?)
     }
 
     async fn create_greeting(&self, greeting: String) -> ApiResult<Greeting> {
-        Ok(Greeting {
-            id: 0,
-            created_at: "2024-06-19T00:00:01.000Z".to_string(),
-            updated_at: "2024-06-19T00:00:01.000Z".to_string(),
-            greeting,
-        })
+        Ok(self
+            .greeting_repository
+            .create_greeting(Greeting {
+                id: 0,
+                created_at: "2024-07-21T00:00:00.000Z".to_string(),
+                updated_at: "2024-07-21T00:00:00.000Z".to_string(),
+                greeting,
+            })
+            .await?)
     }
 }

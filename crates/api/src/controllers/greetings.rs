@@ -1,11 +1,13 @@
-use crate::models::requests::CreateGreetingRequest;
-use crate::models::responses::{CreateGreetingResponse, GetGreetingsResponse};
-use axum::routing::{get, post};
 use axum::{Extension, Json, Router};
+use axum::routing::{get, post};
 use axum_valid::Valid;
+
 use domain::errors::ApiResult;
 use domain::services::greeting_service::DynGreetingService;
 use domain::services::service_registry::ServiceRegistry;
+
+use crate::models::requests::CreateGreetingRequest;
+use crate::models::responses::{CreateGreetingResponse, GetGreetingsResponse};
 
 pub struct GreetingsController;
 

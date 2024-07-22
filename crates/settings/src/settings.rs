@@ -9,8 +9,17 @@ pub struct Server {
 
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
+pub struct Database {
+    pub connection_url: String,
+    pub max_connections: u32,
+    pub migrate_on_startup: bool,
+}
+
+#[derive(Debug, Deserialize)]
+#[allow(unused)]
 pub struct Settings {
     pub server: Server,
+    pub database: Database,
 }
 
 impl Settings {
