@@ -14,3 +14,15 @@ pub struct Greeting {
 
     pub greeting: String,
 }
+
+impl Greeting {
+    pub fn from(greeting: String) -> Self {
+        let now = Utc::now();
+        Self {
+            id: 0,
+            created_at: now,
+            updated_at: now,
+            greeting,
+        }
+    }
+}

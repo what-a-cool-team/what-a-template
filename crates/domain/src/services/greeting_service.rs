@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use axum::async_trait;
-use sqlx::types::chrono::Utc;
 
 use crate::errors::ApiResult;
 use crate::models::greeting::Greeting;
@@ -37,12 +36,7 @@ impl GreetingService for DomainGreetingService {
     async fn create_greeting(&self, greeting: String) -> ApiResult<Greeting> {
         Ok(self
             .greeting_repository
-            .create_greeting(Greeting {
-                id: 0,
-                created_at: Utc::now(),
-                updated_at: Utc::now(),
-                greeting,
-            })
+            .create_greeting(Greeting::from(greeting))
             .await?)
     }
 }
