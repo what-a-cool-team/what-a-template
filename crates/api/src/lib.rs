@@ -1,3 +1,3 @@
-pub mod controllers;
+mod controllers;
 mod models;
 pub mod routers;
