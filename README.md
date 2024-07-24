@@ -1,4 +1,5 @@
 # what-a-template
+
 Rust web app template
 
 ## Table of Contents
@@ -12,26 +13,45 @@ Rust web app template
 - [Contact](#contact)
 
 ## Overview
-The "what-a-template"  is a Rust web app template designed to help developers quickly set up a new web application. It includes a pre-configured project structure, necessary dependencies, and example configurations to streamline the development process.
+
+The "what-a-template"  is a Rust web app template designed to help developers quickly set up a new web application. It
+includes a pre-configured project structure, necessary dependencies, and example configurations to streamline the
+development process.
 
 ## Structure
-- `api/`:  
+
+- `api/`:
 - `app/`: Contains basic app functionalities.
-  - `migrations/`: 
-    - Example files: `20210707120000_create_users_table.sql`: SQL script to create the users table.
-  - `main.rs`: The main entry point for the application.
-- `domain/`: Contains core business logic and domain models for the application. The domain layer typically abstracts and encapsulates the business logic, making it independent of the infrastructure and application layers. For more information, visit https://opus.ch/en/category/ddd-en/.
-  - `models/`:
-  - `repositories/`:
-  - `services/`: 
+    - `migrations/`:
+        - Example files: `20210707120000_create_users_table.sql`: SQL script to create the users table.
+    - `main.rs`: The main entry point for the application.
+- `domain/`: Contains core business logic and domain models for the application. The domain layer typically abstracts
+  and encapsulates the business logic, making it independent of the infrastructure and application layers. For more
+  information, visit https://opus.ch/en/category/ddd-en/.
+    - `models/`:
+    - `repositories/`:
+    - `services/`:
 - `settings/`: Defines and loads configuration settings.
 
 ## Prerequisites
+
 - [Rustup (Recommended)](https://www.rust-lang.org/tools/install)
 - [PostgreSQL](https://www.postgresql.org/download/)
+- [Docker](https://www.docker.com/)
 
 ## Usage
-Run `cargo run --package app --bin app -- --config settings.toml` to start the application.
+
+### Running App
+
+```bash
+cargo run --package app --bin app -- --config settings.toml`
+```
+
+### Running Tests
+
+```bash
+cargo test
+```
 
 ## Contributing
 

@@ -1,6 +1,7 @@
 use anyhow::Context;
 use clap::{arg, command};
 use sqlx::postgres::PgPoolOptions;
+use tokio::net::TcpListener;
 use tracing::log::info;
 use tracing_subscriber::layer::SubscriberExt;
 use tracing_subscriber::util::SubscriberInitExt;
@@ -40,7 +41,10 @@ async fn main() -> anyhow::Result<()> {
     let service_registry = ServiceRegistry::new(pool);
 
     info!("Starting server...");
-    Api::serve(settings.server.port, service_registry.clone())
+    let listener = TcpListener::bind(&format!("0.0.0.0:{}", settings.server.port))
+        .await
+        .unwrap();
+    axum::serve(listener, Api::new(service_registry.clone()))
         .await
         .unwrap();
 

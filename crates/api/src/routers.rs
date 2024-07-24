@@ -4,7 +4,6 @@ use axum::{BoxError, Json, Router};
 use axum::error_handling::HandleErrorLayer;
 use axum::http::{HeaderValue, Method, StatusCode};
 use serde_json::json;
-use tokio::net::TcpListener;
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tower_http::trace::TraceLayer;
@@ -18,8 +17,8 @@ static HTTP_TIMEOUT: u64 = 30;
 pub struct Api;
 
 impl Api {
-    pub async fn serve(port: u32, service_registry: ServiceRegistry) -> anyhow::Result<()> {
-        let router = Router::new()
+    pub fn new(service_registry: ServiceRegistry) -> Router {
+        Router::new()
             .nest(
                 "/api/v1/greetings",
                 GreetingsController::new_router(service_registry.clone()),
@@ -34,14 +33,7 @@ impl Api {
                 CorsLayer::new()
                     .allow_origin("*".parse::<HeaderValue>().unwrap())
                     .allow_methods([Method::POST, Method::GET, Method::PUT, Method::DELETE]),
-            );
-
-        let listener = TcpListener::bind(&format!("0.0.0.0:{}", port))
-            .await
-            .unwrap();
-        axum::serve(listener, router).await.unwrap();
-
-        Ok(())
+            )
     }
 
     async fn handle_timeout(err: BoxError) -> (StatusCode, Json<serde_json::Value>) {
