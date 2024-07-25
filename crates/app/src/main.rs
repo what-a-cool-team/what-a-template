@@ -23,7 +23,10 @@ async fn main() -> anyhow::Result<()> {
 
     let settings = Settings::from(config_path).unwrap();
 
-    info!("Initializing database connection...");
+    info!(
+        "Initializing database connection to {}...",
+        settings.database.connection_url
+    );
     let pool = PgPoolOptions::new()
         .max_connections(settings.database.max_connections)
         .connect(&settings.database.connection_url)
@@ -40,7 +43,7 @@ async fn main() -> anyhow::Result<()> {
 
     let service_registry = ServiceRegistry::new(pool);
 
-    info!("Starting server...");
+    info!("Starting server on {}...", settings.server.port);
     let listener = TcpListener::bind(&format!("0.0.0.0:{}", settings.server.port))
         .await
         .unwrap();

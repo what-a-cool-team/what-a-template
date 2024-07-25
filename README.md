@@ -43,8 +43,16 @@ development process.
 
 ### Running App
 
+#### Using Cargo
+
 ```bash
-cargo run --package app --bin app -- --config settings.toml`
+cargo run --package app --bin app -- --config settings.toml
+```
+
+#### Using Docker
+
+```bash
+docker compose up
 ```
 
 ### Running Tests

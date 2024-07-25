@@ -1,0 +1,21 @@
+services:
+  app:
+    build: .
+    container_name: app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+    environment:
+      APP__DATABASE__CONNECTION_URL: "postgresql://postgres@database:5432/postgres"
+      APP__DATABASE__MAX_CONNECTIONS: 2
+  database:
+    image: postgres:16
+    container_name: app_db
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d postgres -U postgres" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
