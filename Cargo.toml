@@ -3,5 +3,6 @@ members = [
     "crates/api",
     "crates/app",
     "crates/domain",
+    "crates/filesystem",
     "crates/settings"
 ]

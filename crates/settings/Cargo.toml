@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 config = "0.14.0"
 serde = { version = "1.0.204", features = ["derive"] }
+filesystem = { version = "0.1.0", path = "../filesystem" }

@@ -9,6 +9,7 @@ use tracing_subscriber::util::SubscriberInitExt;
 use api::routers::Api;
 use domain::services::service_registry::ServiceRegistry;
 use settings::settings::Settings;
+use filesystem::RealFileSystem;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -21,7 +22,8 @@ async fn main() -> anyhow::Result<()> {
         .get_matches();
     let config_path = matches.get_one::<String>("config").unwrap();
 
-    let settings = Settings::from(config_path).unwrap();
+    let fs = RealFileSystem;
+    let settings = Settings::from(&fs, config_path).unwrap();
 
     info!("Initializing database connection...");
     let pool = PgPoolOptions::new()
