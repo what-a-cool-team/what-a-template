@@ -33,6 +33,8 @@ development process.
     - `services/`:
 - `settings/`: Defines and loads configuration settings.
 
+![what-a-flowchart](https://github.com/user-attachments/assets/a1dae913-be68-4c66-8d4a-f915b7e82f8c)
+
 ## Prerequisites
 
 - [Rustup (Recommended)](https://www.rust-lang.org/tools/install)
