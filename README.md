@@ -12,7 +12,7 @@ Rust web app template
 - [License](#license)
 - [Contact](#contact)
 
-## Overview
+## Introduction
 
 The "what-a-template"  is a Rust web app template designed to help developers quickly set up a new web application. It
 includes a pre-configured project structure, necessary dependencies, and example configurations to streamline the
@@ -20,19 +20,22 @@ development process.
 
 ## Structure
 
-- `api/`:
-- `app/`: Contains basic app functionalities.
+### Overview
+- `api/`: Contains different APIs such as the models and controllers that are used in multiple projects.
+- `app/`: Contains the main application logic.
     - `migrations/`:
         - Example files: `20210707120000_create_users_table.sql`: SQL script to create the users table.
     - `main.rs`: The main entry point for the application.
 - `domain/`: Contains core business logic and domain models for the application. The domain layer typically abstracts
   and encapsulates the business logic, making it independent of the infrastructure and application layers. For more
   information, visit https://opus.ch/en/category/ddd-en/.
-    - `models/`:
-    - `repositories/`:
-    - `services/`:
+    - `models/`: Domain models used for the project.
+    - `repositories/`: Repositories that save/load any persistent information.
+    - `services/`: Service logics for the project. e.g. `greeting_service.rs`
 - `settings/`: Defines and loads configuration settings.
+  - Do not push any personal information from the `settings.toml` to a public worksapce.
 
+### Flowchart
 ![what-a-flowchart](https://github.com/user-attachments/assets/a1dae913-be68-4c66-8d4a-f915b7e82f8c)
 
 ## Prerequisites
