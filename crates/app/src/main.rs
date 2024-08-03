@@ -22,8 +22,8 @@ async fn main() -> anyhow::Result<()> {
         .get_matches();
     let config_path = matches.get_one::<String>("config").unwrap();
 
-    let fs = LocalFileSystem;
-    let file_source = FileSource::from_path(&fs, config_path).unwrap();
+    let fs = LocalFileSystem::new();
+    let file_source = FileSource::from_path(&fs, config_path).await.unwrap();
     let settings = Settings::from(&file_source).unwrap();
 
     info!("Initializing database connection...");

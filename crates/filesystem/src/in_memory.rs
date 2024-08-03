@@ -1,5 +1,8 @@
 use std::collections::HashMap;
-use std::io::{Cursor, Read};
+use std::io::{Cursor};
+use std::pin::Pin;
+use async_trait::async_trait;
+use tokio::io::AsyncRead;
 use crate::FileSystem;
 
 #[derive(Clone)]
@@ -15,8 +18,9 @@ impl InMemoryFileSystem {
     }
 }
 
+#[async_trait]
 impl FileSystem for InMemoryFileSystem {
-    fn create(&mut self, path: &str) -> anyhow::Result<()> {
+    async fn create(&mut self, path: &str) -> anyhow::Result<()> {
         if self.files.contains_key(path) {
             return Err(anyhow::anyhow!("File already exists: {}", path));
         }
@@ -24,15 +28,15 @@ impl FileSystem for InMemoryFileSystem {
         Ok(())
     }
 
-    fn open(&self, path: &str) -> anyhow::Result<Box<dyn Read>> {
+    async fn open(&self, path: &str) -> anyhow::Result<Pin<Box<dyn AsyncRead + Send>>> {
         if let Some(content) = self.files.get(path) {
-            Ok(Box::new(Cursor::new(content.clone())))
+            Ok(Box::pin(Cursor::new(content.clone())))
         } else {
             Err(anyhow::anyhow!("File not found: {}", path))
         }
     }
 
-    fn read(&self, path: &str) -> anyhow::Result<Vec<u8>> {
+    async fn read(&self, path: &str) -> anyhow::Result<Vec<u8>> {
         if let Some(content) = self.files.get(path) {
             Ok(content.clone())
         } else {
@@ -40,7 +44,7 @@ impl FileSystem for InMemoryFileSystem {
         }
     }
 
-    fn delete(&mut self, path: &str) -> anyhow::Result<bool> {
+    async fn delete(&mut self, path: &str) -> anyhow::Result<bool> {
         if self.files.remove(path).is_some() {
             Ok(true)
         } else {

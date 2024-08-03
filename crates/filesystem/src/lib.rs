@@ -1,20 +1,23 @@
-use std::io::Read;
 use config::{ConfigError};
 use anyhow::{Context, Result};
+use async_trait::async_trait;
+use tokio::io::{AsyncRead, AsyncReadExt};
+use std::pin::Pin;
 
-pub trait FileSystem {
-    fn create(&mut self, path: &str) -> Result<()>;
-    fn open(&self, path: &str) -> Result<Box<dyn Read>>;
-    fn read(&self, path: &str) -> Result<Vec<u8>> {
-        let mut file = self.open(path)?;
+#[async_trait]
+pub trait FileSystem: Send + Sync {
+    async fn create(&mut self, path: &str) -> Result<()>;
+    async fn open(&self, path: &str) -> Result<Pin<Box<dyn AsyncRead + Send>>>;
+    async fn read(&self, path: &str) -> Result<Vec<u8>> {
+        let mut file = self.open(path).await?;
         let mut buf = Vec::new();
-        file.read_to_end(&mut buf).with_context(|| format!("Failed to read from {}", path))?;
+        file.read_to_end(&mut buf).await.with_context(|| format!("Failed to read from {}", path))?;
         Ok(buf)
     }
-    fn delete(&mut self, path: &str) -> Result<bool>;
+    async fn delete(&mut self, path: &str) -> Result<bool>;
     fn exists(&self, path: &str) -> bool;
-    fn read_to_string(&self, path: &str) -> Result<String> {
-        let data = self.read(path)?;
+    async fn read_to_string(&self, path: &str) -> Result<String> {
+        let data = self.read(path).await?;
         Ok(String::from_utf8(data)?)
     }
 }
@@ -28,9 +31,9 @@ impl FileSource {
         FileSource { content }
     }
 
-    pub fn from_path(file_system: &dyn FileSystem, path: &str) -> Result<Self, ConfigError> {
+    pub async fn from_path(file_system: &dyn FileSystem, path: &str) -> Result<Self, ConfigError> {
         if file_system.exists(path) {
-            let content = file_system.read_to_string(path).unwrap();
+            let content = file_system.read_to_string(path).await.unwrap();
             Ok(Self { content })
         } else {
             Err(ConfigError::Message("File does not exist".into()))
