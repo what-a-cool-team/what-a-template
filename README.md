@@ -31,6 +31,7 @@ development process.
     - `models/`:
     - `repositories/`:
     - `services/`:
+- `filesystem/`: A custom file system library that implements different kinds of file systems (e.g. `LocalFileSystem`, `InMemoryFileSystem`) for file operations such as create, read, open, and so on.
 - `settings/`: Defines and loads configuration settings.
 
 ## Prerequisites
