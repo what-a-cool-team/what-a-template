@@ -30,7 +30,7 @@ impl Settings {
             .add_source(
                 config::Environment::with_prefix("APP")
                     .try_parsing(true)
-                    .separator("_"),
+                    .separator("__"),
             )
             .build()
             .unwrap();
