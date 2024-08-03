@@ -1,6 +1,6 @@
 use config::{Config, ConfigError};
 use serde::Deserialize;
-use filesystem::FileSystem;
+use filesystem::{FileSource};
 
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
@@ -24,17 +24,16 @@ pub struct Settings {
 }
 
 impl Settings {
-    pub fn from(fs: &dyn FileSystem, path: &str) -> Result<Self, ConfigError> {
-        let file_content = fs.read_file(path).map_err(|e| ConfigError::Message(e))?;
-
+    pub fn from(file_source: &FileSource) -> Result<Self, ConfigError> {
         let s = Config::builder()
-            .add_source(config::File::from_str(&file_content, config::FileFormat::Toml))
+            .add_source(config::File::from_str(&file_source.content, config::FileFormat::Toml))
             .add_source(
                 config::Environment::with_prefix("APP")
                     .try_parsing(true)
                     .separator("_"),
             )
-            .build()?;
+            .build()
+            .unwrap();
 
         s.try_deserialize()
     }
@@ -43,12 +42,12 @@ impl Settings {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use filesystem::MockFileSystem;
+    use filesystem::{InMemoryFileSystem};
 
     #[test]
     fn test_settings_from() {
-        // Create a mock filesystem
-        let mut mock_fs = MockFileSystem::new();
+        // Create an in-memory filesystem
+        let fs = InMemoryFileSystem::new();
 
         // Add a mock configuration file
         let config_content = r#"
@@ -61,10 +60,9 @@ mod tests {
         migrate_on_startup = true
         "#;
 
-        mock_fs.add_file("settings.toml", config_content).unwrap();
-
+        let file_source = FileSource::new(String::from(config_content));
         // Read the settings using the mock filesystem
-        let settings_result = Settings::from(&mock_fs, "settings.toml");
+        let settings_result = Settings::from(&file_source);
 
         match settings_result {
             Ok(settings) => {
