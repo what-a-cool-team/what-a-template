@@ -15,6 +15,7 @@ tracing = "0.1.40"
 clap = { version = "4.5.9", features = ["cargo"] }
 serde = { version = "1.0.204", features = ["derive"] }
 settings = { version = "0.1.0", path = "../settings" }
+filesystem = { version = "0.1.0", path = "../filesystem" }
 sqlx = { version = "0.7.4", features = ["postgres", "runtime-tokio-rustls"] }
 axum = "0.7.5"
 

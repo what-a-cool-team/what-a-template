@@ -32,6 +32,7 @@ development process.
     - `models/`: Domain models used for the project.
     - `repositories/`: Repositories that save/load any persistent information.
     - `services/`: Service logics for the project. e.g. `greeting_service.rs`
+- `filesystem/`: A custom file system library that implements different kinds of file systems (e.g. `LocalFileSystem`, `InMemoryFileSystem`) for file operations such as create, read, open, and so on.
 - `settings/`: Defines and loads configuration settings.
   - Do not push any personal information from the `settings.toml` to a public worksapce.
 
