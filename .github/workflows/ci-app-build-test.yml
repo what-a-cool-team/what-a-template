@@ -6,6 +6,7 @@ on:
     paths:
     - "crates/**"
   pull_request:
+    types: [opened, synchronize, reopened]
     branches:
     - "main"
     paths:
@@ -19,8 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-      with:
-          fetch-depth: 0
     - name: Build
       run: cargo build --verbose
     - name: Run tests
